@@ -18,11 +18,10 @@ const Index = () => {
   const { toast } = useToast();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-lovable-id="app-container">
       <Header />
-      
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
+
+      <section className="relative overflow-hidden" data-lovable-id="hero-section">
         <div className="absolute inset-0 bg-gradient-hero opacity-10" />
         <div className="container relative py-24 md:py-32">
           <div className="max-w-3xl mx-auto text-center space-y-6">
@@ -37,18 +36,17 @@ const Index = () => {
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Premium gadgets and cutting-edge electronics for tech enthusiasts. 
+              Premium gadgets and cutting-edge electronics for tech enthusiasts.
               Experience innovation at your fingertips.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Products Section */}
-      <section className="container py-16">
+      <section className="container py-16" data-lovable-id="products-section">
         <div className="mb-12">
           <h2 className="text-3xl font-bold mb-2">Featured Products</h2>
-          <p className="text-muted-foreground">Explore our latest collection of tech gadgets</p>
+          <p className="text-muted-foreground">Explore our latest collection of tech gadgets including the new iPhone 17 series</p>
         </div>
 
         {isLoading ? (
@@ -67,9 +65,9 @@ const Index = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-lovable-id="products-grid">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow" data-lovable-id={`product-card-${product.id}`}>
                 <div className="relative aspect-square overflow-hidden bg-muted">
                   {product.image_url ? (
                     <img
@@ -129,8 +127,7 @@ const Index = () => {
         )}
       </section>
 
-      {/* Footer */}
-      <footer className="border-t mt-20">
+      <footer className="border-t mt-20" data-lovable-id="footer">
         <div className="container py-8 text-center text-muted-foreground">
           <p>© 2025 Felicia Tech Gadgets. All rights reserved.</p>
         </div>
