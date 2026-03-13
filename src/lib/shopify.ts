@@ -187,7 +187,16 @@ const CART_CREATE_MUTATION = `
   }
 `;
 
-export async function storefrontApiRequest(query: string, variables: any = {}) {
+interface ShopifyError {
+  message: string;
+}
+
+interface ShopifyResponse {
+  data?: Record<string, unknown>;
+  errors?: ShopifyError[];
+}
+
+export async function storefrontApiRequest(query: string, variables: Record<string, unknown> = {}) {
   const response = await fetch(SHOPIFY_STOREFRONT_URL, {
     method: 'POST',
     headers: {
@@ -204,10 +213,10 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const data = await response.json();
-  
+  const data: ShopifyResponse = await response.json();
+
   if (data.errors) {
-    throw new Error(`Error calling Shopify: ${data.errors.map((e: any) => e.message).join(', ')}`);
+    throw new Error(`Error calling Shopify: ${data.errors.map((e) => e.message).join(', ')}`);
   }
 
   return data;
@@ -246,8 +255,9 @@ export async function createStorefrontCheckout(items: Array<{
       },
     });
 
-    if (cartData.data.cartCreate.userErrors.length > 0) {
-      throw new Error(`Cart creation failed: ${cartData.data.cartCreate.userErrors.map((e: any) => e.message).join(', ')}`);
+    const userErrors = (cartData.data?.cartCreate?.userErrors as ShopifyError[]) || [];
+    if (userErrors.length > 0) {
+      throw new Error(`Cart creation failed: ${userErrors.map((e) => e.message).join(', ')}`);
     }
 
     const cart = cartData.data.cartCreate.cart;

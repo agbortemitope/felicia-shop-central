@@ -23,9 +23,9 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    
+
     const variant = product.variants.edges.find(
-      (v: any) => v.node.id === selectedVariantId
+      (v: { node: { id: string } }) => v.node.id === selectedVariantId
     )?.node || product.variants.edges[0]?.node;
 
     if (!variant) return;
@@ -49,9 +49,8 @@ const ProductDetail = () => {
     const newOptions = { ...selectedOptions, [optionName]: value };
     setSelectedOptions(newOptions);
 
-    // Find matching variant
-    const matchingVariant = product?.variants.edges.find((v: any) => {
-      return v.node.selectedOptions.every((opt: any) => 
+    const matchingVariant = product?.variants.edges.find((v: { node: { selectedOptions: Array<{ name: string; value: string }> } }) => {
+      return v.node.selectedOptions.every((opt) =>
         newOptions[opt.name] === opt.value
       );
     });
@@ -89,7 +88,7 @@ const ProductDetail = () => {
   const image = product.images.edges[0]?.node;
   const price = parseFloat(product.priceRange.minVariantPrice.amount);
   const currency = product.priceRange.minVariantPrice.currencyCode;
-  const selectedVariant = product.variants.edges.find((v: any) => v.node.id === selectedVariantId)?.node 
+  const selectedVariant = product.variants.edges.find((v: { node: { id: string } }) => v.node.id === selectedVariantId)?.node
     || product.variants.edges[0]?.node;
 
   return (
@@ -139,7 +138,7 @@ const ProductDetail = () => {
             {/* Options */}
             {product.options && product.options.length > 0 && (
               <div className="space-y-4">
-                {product.options.map((option: any) => (
+                {product.options.map((option: { name: string; values: string[] }) => (
                   option.values.length > 1 && (
                     <div key={option.name}>
                       <h3 className="text-sm font-semibold mb-2">{option.name}</h3>
