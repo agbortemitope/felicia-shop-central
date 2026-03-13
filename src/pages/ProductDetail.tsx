@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
-import { Loader2, ShoppingCart, ArrowLeft, Check } from "lucide-react";
+import { Loader as Loader2, ShoppingCart, ArrowLeft, Check } from "lucide-react";
 import { useState } from "react";
 
 const ProductDetail = () => {
