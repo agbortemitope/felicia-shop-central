@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { fetchProducts } from "@/lib/supabase";
+import { fetchProducts } from "@/lib/api";
 import { Header } from "@/components/Header";
 import { Loader2, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";

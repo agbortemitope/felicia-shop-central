@@ -9,6 +9,8 @@
   BASE_PATH = "/"
   # Tell Vite it's a production build
   NODE_ENV = "production"
+  # Pin Node version to match the development environment
+  NODE_VERSION = "20"
 
 [[redirects]]
   from = "/*"

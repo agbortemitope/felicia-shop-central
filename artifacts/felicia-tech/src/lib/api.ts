@@ -1,4 +1,4 @@
-// Replaced Supabase with generated API client
+// API helper wrappers around the generated API client
 import { listProducts, getProductBySlug, listReviews, createReview as apiCreateReview } from "@workspace/api-client-react";
 
 export interface Product {

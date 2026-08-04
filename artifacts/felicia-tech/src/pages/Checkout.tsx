@@ -151,7 +151,7 @@ const Checkout = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container py-12" data-lovable-id="checkout-page">
+      <div className="container py-12">
         <div className="mb-8">
           <Link to="/cart">
             <Button variant="ghost" size="sm">
@@ -164,7 +164,7 @@ const Checkout = () => {
         <h1 className="text-4xl font-bold mb-12">Checkout</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2" data-lovable-id="checkout-form">
+          <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-8">
               <Card className="p-6">
                 <h2 className="text-xl font-bold mb-6">Contact Information</h2>
@@ -323,7 +323,7 @@ const Checkout = () => {
             </form>
           </div>
 
-          <div data-lovable-id="checkout-summary">
+          <div>
             <Card className="p-6 sticky top-20">
               <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 

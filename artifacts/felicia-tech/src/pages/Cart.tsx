@@ -36,7 +36,7 @@ const Cart = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container py-12" data-lovable-id="cart-page">
+      <div className="container py-12">
         <div className="mb-8">
           <Link to="/">
             <Button variant="ghost" size="sm">
@@ -49,10 +49,10 @@ const Cart = () => {
         <h1 className="text-4xl font-bold mb-12">Shopping Cart</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2" data-lovable-id="cart-items">
+          <div className="lg:col-span-2">
             <div className="space-y-4">
               {items.map((item) => (
-                <Card key={item.id} className="p-6" data-lovable-id={`cart-item-${item.id}`}>
+                <Card key={item.id} className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-xl font-semibold">{item.name}</h3>
@@ -108,7 +108,7 @@ const Cart = () => {
             </Button>
           </div>
 
-          <div data-lovable-id="cart-summary">
+          <div>
             <Card className="p-6 sticky top-20 space-y-6">
               <div>
                 <h2 className="text-2xl font-bold mb-4">Order Summary</h2>

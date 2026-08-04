@@ -4,9 +4,9 @@ import logo from "@/assets/felicia-tech-logo.png";
 
 export const Header = () => {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" data-lovable-id="header">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity" data-lovable-id="logo">
+        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
           <img src={logo} alt="Felicia Tech gadget online store logo" className="h-11 w-auto" />
         </Link>
 

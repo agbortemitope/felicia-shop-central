@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { fetchReviews, submitReview } from "@/lib/supabase";
+import { fetchReviews, submitReview } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
 interface ReviewSectionProps {
@@ -65,7 +65,7 @@ export const ReviewSection = ({ productId }: ReviewSectionProps) => {
   };
 
   return (
-    <section className="mt-16" data-lovable-id="reviews-section">
+    <section className="mt-16">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h2 className="text-2xl font-bold">Customer Reviews</h2>
         {reviews && reviews.length > 0 && (
