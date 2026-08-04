@@ -99,7 +99,7 @@ const Index = () => {
                       {product.description}
                     </p>
                   )}
-                  <div className="flex items-center justify-between pt-2">
+                  <div className="flex items-center justify-between pt-2 mt-auto">
                     <span className="text-xl font-bold">
                       ${parseFloat(product.price.toString()).toFixed(2)}
                     </span>
