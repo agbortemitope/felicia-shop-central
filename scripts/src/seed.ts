@@ -339,29 +339,31 @@ const reviews: {
 async function seed() {
   const client = await pool.connect();
   try {
-    // Clear existing data (reviews first due to FK constraint)
-    await client.query("DELETE FROM reviews");
-    await client.query("DELETE FROM products");
-
-    // Insert products
+    // Insert products (idempotent — skip rows that already exist by primary key)
+    let productCount = 0;
     for (const p of products) {
-      await client.query(
+      const result = await client.query(
         `INSERT INTO products (id, title, slug, description, price, image_url, category, in_stock)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         ON CONFLICT (id) DO NOTHING`,
         [p.id, p.title, p.slug, p.description, p.price, p.image_url, p.category, p.in_stock]
       );
+      productCount += result.rowCount ?? 0;
     }
-    console.log(`✓ Seeded ${products.length} products.`);
+    console.log(`✓ Seeded ${productCount} products (${products.length - productCount} already existed).`);
 
-    // Insert reviews
+    // Insert reviews (idempotent — skip rows that already exist by primary key)
+    let reviewCount = 0;
     for (const r of reviews) {
-      await client.query(
+      const result = await client.query(
         `INSERT INTO reviews (id, product_id, author_name, rating, comment)
-         VALUES ($1,$2,$3,$4,$5)`,
+         VALUES ($1,$2,$3,$4,$5)
+         ON CONFLICT (id) DO NOTHING`,
         [r.id, r.product_id, r.author_name, r.rating, r.comment]
       );
+      reviewCount += result.rowCount ?? 0;
     }
-    console.log(`✓ Seeded ${reviews.length} reviews.`);
+    console.log(`✓ Seeded ${reviewCount} reviews (${reviews.length - reviewCount} already existed).`);
   } finally {
     client.release();
     await pool.end();
