@@ -1,0 +1,16 @@
+[build]
+  # Build the frontend from the pnpm workspace.
+  # Netlify auto-detects pnpm via pnpm-lock.yaml and runs `pnpm install` first.
+  command = "pnpm --filter @workspace/felicia-tech run build"
+  publish = "artifacts/felicia-tech/dist/public"
+
+[build.environment]
+  # Required by the Vite config. "/" for a root-hosted Netlify site.
+  BASE_PATH = "/"
+  # Tell Vite it's a production build
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
