@@ -28,17 +28,17 @@ const Index = () => {
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
               <Zap className="w-4 h-4" />
-              Latest Tech Gadgets
+              Gadget Online Store
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-              Discover the Future of{" "}
+              The latest phones,{" "}
               <span className="bg-gradient-hero bg-clip-text text-transparent">
-                Technology
+                delivered fast
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Premium gadgets and cutting-edge electronics for tech enthusiasts.
-              Experience innovation at your fingertips.
+              Genuine iPhone, Motorola and rugged handsets — sealed, warranty-backed
+              and ready to ship from Felicia Tech.
             </p>
           </div>
         </div>
@@ -47,8 +47,9 @@ const Index = () => {
       <section className="container py-16" data-lovable-id="products-section">
         <div className="mb-12">
           <h2 className="text-3xl font-bold mb-2">Featured Products</h2>
-          <p className="text-muted-foreground">Laptops, phones, audio, gaming and more — browse a product to read and leave reviews</p>
+          <p className="text-muted-foreground">Browse a product to read customer reviews and leave your own</p>
         </div>
+
 
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
