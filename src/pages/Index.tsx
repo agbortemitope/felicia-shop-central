@@ -68,27 +68,32 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-lovable-id="products-grid">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow" data-lovable-id={`product-card-${product.id}`}>
-                <div className="relative aspect-square overflow-hidden bg-muted">
-                  {product.image_url ? (
-                    <img
-                      src={product.image_url}
-                      alt={product.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                      <Zap className="w-12 h-12 text-primary/50" />
-                    </div>
-                  )}
-                </div>
-                <div className="p-4 space-y-3">
+              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow flex flex-col" data-lovable-id={`product-card-${product.id}`}>
+                <Link to={`/product/${product.slug}`} className="block">
+                  <div className="relative aspect-square overflow-hidden bg-muted">
+                    {product.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={product.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                        <Zap className="w-12 h-12 text-primary/50" />
+                      </div>
+                    )}
+                  </div>
+                </Link>
+                <div className="p-4 space-y-3 flex-1 flex flex-col">
                   {product.category && (
                     <p className="text-xs font-medium text-primary uppercase tracking-wider">
                       {product.category}
                     </p>
                   )}
-                  <h3 className="font-semibold line-clamp-2">{product.title}</h3>
+                  <Link to={`/product/${product.slug}`}>
+                    <h3 className="font-semibold line-clamp-2 hover:text-primary transition-colors">{product.title}</h3>
+                  </Link>
                   {product.description && (
                     <p className="text-sm text-muted-foreground line-clamp-2">
                       {product.description}
