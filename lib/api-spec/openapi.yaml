@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API specification for Felicia Tech gadget store
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: products
+    description: Product catalog operations
+  - name: reviews
+    description: Product review operations
 paths:
   /healthz:
     get:
@@ -24,6 +28,97 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List all products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/{slug}:
+    get:
+      operationId: getProductBySlug
+      tags: [products]
+      summary: Get a product by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /products/{productId}/reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: List reviews for a product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Submit a review for a product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +129,65 @@ components:
       required:
         - status
 
+    Product:
+      type: object
+      required: [id, title, slug, price, in_stock, created_at]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: number
+        image_url:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        in_stock:
+          type: boolean
+        created_at:
+          type: string
+
+    Review:
+      type: object
+      required: [id, product_id, author_name, rating, created_at]
+      properties:
+        id:
+          type: string
+        product_id:
+          type: string
+        author_name:
+          type: string
+        rating:
+          type: number
+        comment:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    ReviewInput:
+      type: object
+      required: [author_name, rating]
+      properties:
+        author_name:
+          type: string
+          minLength: 1
+          maxLength: 60
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          maxLength: 1000
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
