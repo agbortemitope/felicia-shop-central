@@ -47,7 +47,7 @@ const Index = () => {
       <section className="container py-16" data-lovable-id="products-section">
         <div className="mb-12">
           <h2 className="text-3xl font-bold mb-2">Featured Products</h2>
-          <p className="text-muted-foreground">Explore our latest collection of tech gadgets including the new iPhone 17 series</p>
+          <p className="text-muted-foreground">Laptops, phones, audio, gaming and more — browse a product to read and leave reviews</p>
         </div>
 
         {isLoading ? (
