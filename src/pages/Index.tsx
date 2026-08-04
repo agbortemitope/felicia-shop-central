@@ -71,14 +71,15 @@ const Index = () => {
             {products.map((product) => (
               <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow flex flex-col" data-lovable-id={`product-card-${product.id}`}>
                 <Link to={`/product/${product.slug}`} className="block">
-                  <div className="relative aspect-square overflow-hidden bg-muted">
+                  <div className="relative aspect-square overflow-hidden bg-white">
                     {product.image_url ? (
                       <img
                         src={product.image_url}
                         alt={product.title}
                         loading="lazy"
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
                       />
+
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                         <Zap className="w-12 h-12 text-primary/50" />
