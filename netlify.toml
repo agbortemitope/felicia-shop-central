@@ -12,6 +12,17 @@
   # Pin Node version to match the development environment
   NODE_VERSION = "20"
 
+# Proxy /api/* to the Replit API server.
+# This rule must come BEFORE the SPA catch-all below so Netlify doesn't
+# serve index.html for API requests.
+[[redirects]]
+  from = "/api/*"
+  to = "https://felicia-shop-central--temitopeagbor12.replit.app/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback — send all non-file requests to index.html so client-side
+# routing works on page refresh and direct URL entry.
 [[redirects]]
   from = "/*"
   to = "/index.html"
