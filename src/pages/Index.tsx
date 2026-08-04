@@ -137,7 +137,7 @@ const Index = () => {
 
       <footer className="border-t mt-20" data-lovable-id="footer">
         <div className="container py-8 text-center text-muted-foreground">
-          <p>© 2025 Felicia Tech Gadgets. All rights reserved.</p>
+          <p>© 2026 Felicia Tech. All rights reserved.</p>
         </div>
       </footer>
     </div>
