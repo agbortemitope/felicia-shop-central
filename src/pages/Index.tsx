@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchDummyProducts } from "@/lib/supabase";
+import { Link } from "react-router-dom";
+import { fetchProducts } from "@/lib/supabase";
 import { Header } from "@/components/Header";
 import { Loader2, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -11,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const { data: products, isLoading, error } = useQuery({
     queryKey: ['products'],
-    queryFn: () => fetchDummyProducts(),
+    queryFn: () => fetchProducts(),
   });
 
   const { addItem } = useCartStore();
