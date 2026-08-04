@@ -68,13 +68,14 @@ const ProductDetail = () => {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-12">
-          <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
+          <div className="relative aspect-square rounded-xl overflow-hidden bg-white border">
             {product.image_url ? (
               <img
                 src={product.image_url}
                 alt={product.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain p-6"
               />
+
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <Zap className="w-12 h-12 text-primary/50" />
