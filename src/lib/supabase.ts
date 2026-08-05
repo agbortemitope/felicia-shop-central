@@ -1,13 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "@/integrations/supabase/client";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export { supabase };
 
 export interface Product {
   id: string;
   title: string;
+  slug: string;
   description: string | null;
   price: number;
   image_url: string | null;
@@ -16,16 +14,46 @@ export interface Product {
   created_at: string;
 }
 
-export async function fetchDummyProducts(): Promise<Product[]> {
+export interface Review {
+  id: string;
+  product_id: string;
+  author_name: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
+export async function fetchProducts(): Promise<Product[]> {
   const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error('Error fetching products:', error);
-    throw error;
-  }
+  if (error) throw error;
+  return (data || []) as Product[];
+}
 
-  return data || [];
+// Backwards-compatible alias
+export const fetchDummyProducts = fetchProducts;
+
+export async function fetchProductBySlug(slug: string): Promise<Product | null> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) throw error;
+  return (data as Product) || null;
+}
+
+export async function fetchReviews(productId: string): Promise<Review[]> {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("product_id", productId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data || []) as Review[];
 }
