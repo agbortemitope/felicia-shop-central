@@ -1,188 +1,151 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "react-router-dom";
-import { fetchProductByHandle } from "@/lib/shopify";
+import { fetchProductBySlug, fetchReviews } from "@/lib/supabase";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
-import { Loader as Loader2, ShoppingCart, ArrowLeft, Check } from "lucide-react";
-import { useState } from "react";
+import { Loader as Loader2, ShoppingCart, ArrowLeft, Star } from "lucide-react";
+
+const Stars = ({ rating }: { rating: number }) => (
+  <div className="flex items-center gap-0.5">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${i <= Math.round(rating) ? "fill-primary text-primary" : "text-muted-foreground/40"}`}
+      />
+    ))}
+  </div>
+);
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
-  const addItem = useCartStore(state => state.addItem);
-  const [selectedVariantId, setSelectedVariantId] = useState<string>("");
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const addItem = useCartStore((state) => state.addItem);
 
-  const { data: product, isLoading, error } = useQuery({
-    queryKey: ['product', handle],
-    queryFn: () => fetchProductByHandle(handle!),
+  const { data: product, isLoading } = useQuery({
+    queryKey: ["product", handle],
+    queryFn: () => fetchProductBySlug(handle!),
     enabled: !!handle,
   });
 
-  const handleAddToCart = () => {
-    if (!product) return;
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", product?.id],
+    queryFn: () => fetchReviews(product!.id),
+    enabled: !!product?.id,
+  });
 
-    const variant = product.variants.edges.find(
-      (v: { node: { id: string } }) => v.node.id === selectedVariantId
-    )?.node || product.variants.edges[0]?.node;
-
-    if (!variant) return;
-
-    const cartItem = {
-      product: { node: product },
-      variantId: variant.id,
-      variantTitle: variant.title,
-      price: variant.price,
-      quantity: 1,
-      selectedOptions: variant.selectedOptions || []
-    };
-    
-    addItem(cartItem);
-    toast.success('Added to cart', {
-      description: `${product.title} has been added to your cart`,
-    });
-  };
-
-  const handleOptionChange = (optionName: string, value: string) => {
-    const newOptions = { ...selectedOptions, [optionName]: value };
-    setSelectedOptions(newOptions);
-
-    const matchingVariant = product?.variants.edges.find((v: { node: { selectedOptions: Array<{ name: string; value: string }> } }) => {
-      return v.node.selectedOptions.every((opt) =>
-        newOptions[opt.name] === opt.value
-      );
-    });
-
-    if (matchingVariant) {
-      setSelectedVariantId(matchingVariant.node.id);
-    }
-  };
+  const average =
+    reviews && reviews.length
+      ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+      : 0;
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container flex items-center justify-center py-20">
+        <div className="flex items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </div>
     );
   }
 
-  if (error || !product) {
+  if (!product) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container py-20 text-center">
-          <p className="text-destructive">Product not found</p>
+        <div className="container py-32 text-center space-y-4">
+          <p className="text-muted-foreground">Product not found.</p>
           <Link to="/">
-            <Button className="mt-4">Back to Home</Button>
+            <Button variant="outline">
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to shop
+            </Button>
           </Link>
         </div>
       </div>
     );
   }
 
-  const image = product.images.edges[0]?.node;
-  const price = parseFloat(product.priceRange.minVariantPrice.amount);
-  const currency = product.priceRange.minVariantPrice.currencyCode;
-  const selectedVariant = product.variants.edges.find((v: { node: { id: string } }) => v.node.id === selectedVariantId)?.node
-    || product.variants.edges[0]?.node;
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      <div className="container py-8">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Products
-          </Button>
+
+      <div className="container py-10">
+        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to shop
         </Link>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Image */}
-          <div className="relative aspect-square rounded-xl overflow-hidden bg-muted shadow-card">
-            {image ? (
+        <div className="grid md:grid-cols-2 gap-10">
+          <div className="rounded-xl border bg-white p-6 flex items-center justify-center">
+            {product.image_url ? (
               <img
-                src={image.url}
-                alt={image.altText || product.title}
-                className="w-full h-full object-cover"
+                src={product.image_url}
+                alt={product.title}
+                className="w-full h-[420px] object-contain"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                No image available
-              </div>
+              <div className="h-[420px] flex items-center justify-center text-muted-foreground">No image</div>
             )}
           </div>
 
-          {/* Product Info */}
           <div className="space-y-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-4">{product.title}</h1>
-              <p className="text-3xl font-bold text-primary">
-                {currency} {price.toFixed(2)}
-              </p>
-            </div>
+            {product.category && <Badge variant="secondary">{product.category}</Badge>}
+            <h1 className="text-3xl font-bold">{product.title}</h1>
 
+            {reviews && reviews.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Stars rating={average} />
+                <span className="text-sm text-muted-foreground">
+                  {average.toFixed(1)} · {reviews.length} reviews
+                </span>
+              </div>
+            )}
+
+            <p className="text-3xl font-bold text-primary">${Number(product.price).toFixed(2)}</p>
             {product.description && (
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Description</h2>
-                <p className="text-muted-foreground">{product.description}</p>
-              </div>
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
             )}
 
-            {/* Options */}
-            {product.options && product.options.length > 0 && (
-              <div className="space-y-4">
-                {product.options.map((option: { name: string; values: string[] }) => (
-                  option.values.length > 1 && (
-                    <div key={option.name}>
-                      <h3 className="text-sm font-semibold mb-2">{option.name}</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {option.values.map((value: string) => (
-                          <Button
-                            key={value}
-                            variant={selectedOptions[option.name] === value ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => handleOptionChange(option.name, value)}
-                            className="relative"
-                          >
-                            {value}
-                            {selectedOptions[option.name] === value && (
-                              <Check className="w-3 h-3 ml-2" />
-                            )}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                ))}
-              </div>
-            )}
-
-            {/* Availability */}
-            {selectedVariant && (
-              <Badge variant={selectedVariant.availableForSale ? "default" : "secondary"}>
-                {selectedVariant.availableForSale ? "In Stock" : "Out of Stock"}
-              </Badge>
-            )}
-
-            {/* Add to Cart */}
-            <Button 
-              onClick={handleAddToCart}
+            <Button
               size="lg"
-              className="w-full md:w-auto"
-              disabled={!selectedVariant?.availableForSale}
+              className="w-full"
+              disabled={!product.in_stock}
+              onClick={() => {
+                addItem({
+                  id: product.id,
+                  name: product.title,
+                  price: Number(product.price),
+                  quantity: 1,
+                });
+                toast.success("Added to cart", { description: product.title });
+              }}
             >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Add to Cart
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              {product.in_stock ? "Add to Cart" : "Out of Stock"}
             </Button>
           </div>
         </div>
+
+        {reviews && reviews.length > 0 && (
+          <section className="mt-16 max-w-3xl">
+            <h2 className="text-2xl font-bold mb-6">Customer reviews</h2>
+            <div className="space-y-6">
+              {reviews.map((r) => (
+                <div key={r.id} className="border-b pb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium">{r.author_name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(r.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <Stars rating={r.rating} />
+                  {r.comment && <p className="text-muted-foreground mt-2">{r.comment}</p>}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
