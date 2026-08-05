@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, getCategories, type Product } from "@/lib/supabase";
 import { Header } from "@/components/Header";
-import { Loader as Loader2, Zap, ShoppingCart, Star } from "lucide-react";
+import { Loader as Loader2, Zap, ShoppingCart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
